@@ -1,4 +1,4 @@
-package com.epam.multithreading.Exception;
+package com.epam.multithreading.exception;
 
 public class ResourceException extends Exception {
 
