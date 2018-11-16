@@ -1,14 +1,20 @@
 [
   {
     "name": "Terra",
-    "capacity": "5"
+    "capacity": "5",
+    "fullness": "3",
+    "target": "UNLOAD"
   },
   {
     "name": "Mess",
-    "capacity": "5"
+    "capacity": "5",
+    "fullness": "0",
+    "target": "LOAD"
   },
   {
     "name": "California",
-    "capacity": "5"
+    "capacity": "5",
+    "fullness": "3",
+    "target": "UNLOAD_LOAD"
   }
 ]

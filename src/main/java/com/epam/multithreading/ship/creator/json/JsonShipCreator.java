@@ -1,7 +1,8 @@
-package com.epam.multithreading.shipcreator.json;
+package com.epam.multithreading.ship.creator.json;
 
 import com.epam.multithreading.exception.ShipCreatingException;
 import com.epam.multithreading.ship.Ship;
+import com.epam.multithreading.ship.Target;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -23,7 +24,11 @@ public class JsonShipCreator {
                 String name = (String) ship.get("name");
                 String capacityContent = (String) ship.get("capacity");
                 int capacity = Integer.parseInt(capacityContent);
-                parsedShips.add(new Ship(name,capacity));
+                String containerAmountContent = (String) ship.get("fullness");
+                int containerAmount = Integer.parseInt(containerAmountContent);
+                String targetContent = (String)ship.get("target");
+                Target target = Target.valueOf(targetContent);
+                parsedShips.add(new Ship(name,capacity,containerAmount,target));
             }
             return parsedShips;
         } catch (ParseException | IOException e){

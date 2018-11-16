@@ -1,17 +1,17 @@
-package com.epam.multithreading.Director;
+package com.epam.multithreading.demo;
 
 import com.epam.multithreading.exception.ShipCreatingException;
 import com.epam.multithreading.port.Port;
 import com.epam.multithreading.ship.Ship;
-import com.epam.multithreading.shipcreator.json.JsonShipCreator;
+import com.epam.multithreading.ship.creator.json.JsonShipCreator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class Director {
-    private static final Logger logger = LogManager.getLogger(Director.class);
+public class MultithreadingDemo {
+    private static final Logger logger = LogManager.getLogger(MultithreadingDemo.class);
     private static final String SHIPS_DATA_FILE = "src/test/resources/Ships.json";
     private static final int BERTH_AMOUNT = 2;
     private static final int STORAGE_CAPACITY = 20;

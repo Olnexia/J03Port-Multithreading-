@@ -1,4 +1,4 @@
-package com.epam.multithreading.entity;
+package com.epam.multithreading.container;
 
 public class Container {
     private int registrationNumber;

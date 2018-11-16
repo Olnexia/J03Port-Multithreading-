@@ -1,6 +1,7 @@
 package com.epam.multithreading.ship;
 
-import com.epam.multithreading.entity.Container;
+import com.epam.multithreading.container.Container;
+import com.epam.multithreading.container.ContainerRegistrar;
 import com.epam.multithreading.port.Berth;
 import com.epam.multithreading.port.Port;
 import org.apache.logging.log4j.LogManager;
@@ -8,33 +9,43 @@ import org.apache.logging.log4j.Logger;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class Ship implements Runnable {
+    private static final ContainerRegistrar CONTAINER_REGISTRAR = ContainerRegistrar.getRegistrar();
     private static final Logger logger = LogManager.getLogger(Ship.class);
-    private static int currentContainerId = 100;
-    private static Random random = new Random();
     private String name;
     private Port port;
     private Berth berth;
+    private Target target;
     private Queue<Container> containers = new LinkedList <>();
     private int containerAmount;
     private int capacity;
 
-    public Ship(String name, int capacity){
+    public Ship(String name, int capacity, int containerAmount,Target target){
         this.name = name;
         this.capacity = capacity;
-        generateStorage(capacity);
+        this.target = target;
+        this.containerAmount = containerAmount;
+        if(containerAmount>0){
+            generateStorage(containerAmount);
+        }
     }
 
     public void run() {
         moor();
-        if(containerAmount == 0){
-            loadShip();
-        } else{
-            unloadShip();
-            loadShip();
+        switch (target){
+            case UNLOAD:
+                unloadShip();
+                break;
+            case LOAD:
+                loadShip();
+                break;
+            case UNLOAD_LOAD:
+                unloadShip();
+                loadShip();
+                break;
+
         }
         leave();
     }
@@ -46,7 +57,7 @@ public class Ship implements Runnable {
                 System.out.println("The ship" + name + "is empty");
                 return;
             }
-            if(port.setContainer(container)){
+            if(port.offerContainer(container)){
                 berth.notifyUnloaded(container.getRegistrationNumber());
                 System.out.println("The ship " + name + " has unloaded container # "+ container.getRegistrationNumber());
             } else{
@@ -58,16 +69,12 @@ public class Ship implements Runnable {
     }
 
     private void loadShip(){
+        List<Integer> unloadedContainersId = berth.getUnloadedContainersId();
         while(containerAmount<capacity){
-            Container container = port.getContainer();
+            Container container = port.getNewContainer(unloadedContainersId);
             if(container == null){
-                System.out.println("The port storage is empty");
+                System.out.println("Ship "+name+": Nothing to load");
                 return;
-            }
-            List<Integer> unloadedContainersId = berth.getUnloadedContainersId();
-            if(unloadedContainersId.contains(container.getRegistrationNumber())){
-                port.setContainer(container);
-                continue;
             }
             if(containers.offer(container)){
                 containerAmount++;
@@ -98,10 +105,10 @@ public class Ship implements Runnable {
         }
     }
 
-    private void generateStorage(int capacity) {
-        containerAmount = random.nextInt(capacity);
+    private void generateStorage(int containerAmount) {
         for (int i = 0; i < containerAmount; i++) {
-            containers.add(new Container(currentContainerId++));
+            Container container = CONTAINER_REGISTRAR.getContainer();
+            containers.add(container);
         }
     }
 

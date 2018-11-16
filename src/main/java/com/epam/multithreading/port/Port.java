@@ -1,18 +1,20 @@
  package com.epam.multithreading.port;
 
+ import com.epam.multithreading.container.ContainerRegistrar;
  import com.epam.multithreading.exception.ResourceException;
- import com.epam.multithreading.entity.Container;
+ import com.epam.multithreading.container.Container;
  import org.apache.logging.log4j.LogManager;
  import org.apache.logging.log4j.Logger;
  import java.util.LinkedList;
+ import java.util.List;
  import java.util.Queue;
  import java.util.concurrent.atomic.AtomicBoolean;
  import java.util.concurrent.locks.Lock;
  import java.util.concurrent.locks.ReentrantLock;
 
  public class Port {
+     private static final ContainerRegistrar CONTAINER_REGISTRAR = ContainerRegistrar.getRegistrar();
      private static final Logger logger = LogManager.getLogger(Port.class);
-     private static int currentContainerId;
      private static AtomicBoolean initialized = new AtomicBoolean(false);
      private static Port instance = null;
      private static Lock lock = new ReentrantLock();
@@ -56,7 +58,8 @@
          try{
              containerAmount = capacity/2;
              for(int i = 0; i<containerAmount;i++){
-                 containers.add(new Container(currentContainerId++));
+                 Container container = CONTAINER_REGISTRAR.getContainer();
+                 containers.add(container);
              }
          }finally {
              lock.unlock();
@@ -85,7 +88,7 @@
          berthPool.returnBerth(berth);
      }
 
-     public boolean setContainer(Container container){
+     public boolean offerContainer(Container container){
          lock.lock();
          boolean added;
          try{
@@ -96,14 +99,20 @@
          return added;
      }
 
-     public Container getContainer(){
+     public Container getNewContainer(List<Integer> oldContainersId){
          lock.lock();
-         Container container;
          try{
-             container = containers.poll();
+             for(Container container:containers){
+                 int containerId = container.getRegistrationNumber();
+                 if(!oldContainersId.contains(containerId)){
+                    containers.remove(container);
+                    return container;
+                 }
+             }
+             return null;
          }finally {
              lock.unlock();
          }
-         return container;
      }
+
  }
