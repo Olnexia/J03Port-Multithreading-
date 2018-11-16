@@ -1,0 +1,14 @@
+[
+  {
+    "name": "Flame",
+    "capacity": "5",
+    "fullness": "3",
+    "target": "LOAD"
+  },
+  {
+    "name": "Golden",
+    "capacity": "7",
+    "fullness": "4",
+    "target": "UNLOAD_LOAD"
+  }
+]

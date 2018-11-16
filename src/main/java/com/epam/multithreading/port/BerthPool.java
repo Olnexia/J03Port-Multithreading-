@@ -4,13 +4,10 @@ import com.epam.multithreading.exception.ResourceException;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class BerthPool {
     private Semaphore semaphore;
     private Queue<Berth> pool = new LinkedList<>();
-    private Lock lock = new ReentrantLock();
 
     public BerthPool(Queue<Berth> pool){
         this.pool.addAll(pool);
@@ -18,18 +15,16 @@ public class BerthPool {
     }
 
     public Berth getBerth() throws ResourceException {
-        lock.lock();
         try {
             semaphore.acquire();
             Berth berth = pool.poll();
-            if(berth!=null){
-                System.out.println("Berth # "+ berth.getBerthId() +" occupied");
+            if(berth == null){
+                throw new ResourceException("A berth was not received");
             }
+            System.out.println("Berth # "+ berth.getBerthId() +" occupied");
             return berth;
         } catch (InterruptedException e) {
             throw new ResourceException(e.getMessage(), e);
-        } finally {
-            lock.unlock();
         }
     }
 

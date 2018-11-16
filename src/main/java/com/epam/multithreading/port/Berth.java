@@ -12,12 +12,15 @@ public class Berth {
     }
 
     public int getBerthId() {
-        unloadedContainersId.clear();
         return berthId;
     }
 
     public void notifyUnloaded(int unloadedId){
         unloadedContainersId.add(unloadedId);
+    }
+
+    public void clearUnloadedList(){
+        unloadedContainersId.clear();
     }
 
     public List <Integer> getUnloadedContainersId() {

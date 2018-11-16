@@ -12,8 +12,8 @@ import java.util.concurrent.Executors;
 
 public class MultithreadingDemo {
     private static final Logger logger = LogManager.getLogger(MultithreadingDemo.class);
-    private static final String SHIPS_DATA_FILE = "src/test/resources/Ships.json";
-    private static final int BERTH_AMOUNT = 2;
+    private static final String SHIPS_DATA_FILE = "src/test/resources/DemoShips.json";
+    private static final int BERTH_AMOUNT = 3;
     private static final int STORAGE_CAPACITY = 20;
 
     public static void main(String[]args){

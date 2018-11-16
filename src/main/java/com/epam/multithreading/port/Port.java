@@ -20,7 +20,6 @@
      private static Lock lock = new ReentrantLock();
      private BerthPool berthPool;
      private Queue<Container> containers = new LinkedList <>();
-     private int containerAmount;
 
      private Port() {
      }
@@ -56,8 +55,8 @@
      private void generateHalfFullStorage(int capacity){
          lock.lock();
          try{
-             containerAmount = capacity/2;
-             for(int i = 0; i<containerAmount;i++){
+             int containerAmount = capacity / 2;
+             for(int i = 0; i< containerAmount; i++){
                  Container container = CONTAINER_REGISTRAR.getContainer();
                  containers.add(container);
              }
@@ -90,13 +89,11 @@
 
      public boolean offerContainer(Container container){
          lock.lock();
-         boolean added;
          try{
-             added = containers.offer(container);
+             return containers.offer(container);
          }finally {
              lock.unlock();
          }
-         return added;
      }
 
      public Container getNewContainer(List<Integer> oldContainersId){

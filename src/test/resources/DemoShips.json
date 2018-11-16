@@ -1,0 +1,38 @@
+[
+  {
+    "name": "Terra",
+    "capacity": "7",
+    "fullness": "7",
+    "target": "UNLOAD"
+  },
+  {
+    "name": "California",
+    "capacity": "4",
+    "fullness": "2",
+    "target": "UNLOAD_LOAD"
+  },
+  {
+    "name": "Mess",
+    "capacity": "5",
+    "fullness": "0",
+    "target": "LOAD"
+  },
+  {
+    "name": "Camellia",
+    "capacity": "7",
+    "fullness": "5",
+    "target": "UNLOAD_LOAD"
+  },
+  {
+    "name": "Gorden",
+    "capacity": "7",
+    "fullness": "6",
+    "target": "UNLOAD"
+  },
+  {
+    "name": "Renard",
+    "capacity": "7",
+    "fullness": "0",
+    "target": "LOAD"
+  }
+]

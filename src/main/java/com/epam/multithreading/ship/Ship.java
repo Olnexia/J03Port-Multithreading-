@@ -45,12 +45,12 @@ public class Ship implements Runnable {
                 unloadShip();
                 loadShip();
                 break;
-
         }
         leave();
     }
 
     private void unloadShip(){
+
         while(containerAmount>0){
             Container container = containers.poll();
             if(container==null){
@@ -58,7 +58,8 @@ public class Ship implements Runnable {
                 return;
             }
             if(port.offerContainer(container)){
-                berth.notifyUnloaded(container.getRegistrationNumber());
+                int containerId = container.getRegistrationNumber();
+                berth.notifyUnloaded(containerId);
                 System.out.println("The ship " + name + " has unloaded container # "+ container.getRegistrationNumber());
             } else{
                 System.out.println("The port storage is full");
@@ -88,7 +89,7 @@ public class Ship implements Runnable {
     private void moor(){
         try{
             berth = port.getBerth();
-            TimeUnit.MILLISECONDS.sleep(100);
+            TimeUnit.MICROSECONDS.sleep(100);
             System.out.println("The Ship " + name +" has moored to the berth # "+ berth.getBerthId());
         }catch (InterruptedException e){
             logger.error("An error occurred while mooring ship " + name,e.getMessage());
@@ -97,9 +98,10 @@ public class Ship implements Runnable {
 
     private void leave(){
         try {
+            berth.clearUnloadedList();
             port.returnBerth(berth);
-            System.out.println("The ship " + name + " has leaved the berth # " + berth.getBerthId());
-            TimeUnit.MILLISECONDS.sleep(100);
+            System.out.println("The ship " + name + " has left the berth # " + berth.getBerthId());
+            TimeUnit.MICROSECONDS.sleep(100);
         }catch (InterruptedException e){
             logger.error("An error occurred while leaving the port ",e.getMessage());
         }
@@ -114,5 +116,21 @@ public class Ship implements Runnable {
 
     public void setPort(Port port) {
         this.port = port;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Target getTarget() {
+        return target;
+    }
+
+    public int getContainerAmount() {
+        return containerAmount;
+    }
+
+    public int getCapacity() {
+        return capacity;
     }
 }
