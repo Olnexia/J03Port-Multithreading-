@@ -11,7 +11,6 @@ import org.apache.logging.log4j.Logger;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.concurrent.TimeUnit;
 
 public class Ship implements Runnable {
     private static final Logger logger = LogManager.getLogger(Ship.class);
@@ -48,7 +47,7 @@ public class Ship implements Runnable {
                 loadShip();
                 break;
                 default:
-                    logger.error("Illegal port activity value. Ship "+name);
+                    logger.error("Illegal port service value. Ship "+name);
                     throw new IllegalArgumentException();
         }
         leave();
@@ -100,22 +99,18 @@ public class Ship implements Runnable {
     private void moor(){
         try{
             berth = port.getBerth();
-            TimeUnit.MICROSECONDS.sleep(100);
+            logger.info("The Ship " + name +" has moored to the berth # "+ berth.getBerthId());
             System.out.println("The Ship " + name +" has moored to the berth # "+ berth.getBerthId());
-        }catch (InterruptedException| ResourceException e){
+        }catch ( ResourceException e){
             logger.error("An error occurred while mooring ship " + name,e.getMessage());
         }
     }
 
-    private void leave(){
-        try {
-            berth.clearUnloadedList();
-            port.returnBerth(berth);
-            System.out.println("The ship " + name + " has left the berth # " + berth.getBerthId());
-            TimeUnit.MICROSECONDS.sleep(100);
-        }catch (InterruptedException e){
-            logger.error("An error occurred while leaving the port ",e.getMessage());
-        }
+    private void leave() {
+        berth.clearUnloadedList();
+        port.returnBerth(berth);
+        logger.info("The ship " + name + " has left the berth # " + berth.getBerthId());
+        System.out.println("The ship " + name + " has left the berth # " + berth.getBerthId());
     }
 
     public void setPort(Port port) {

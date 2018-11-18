@@ -1,4 +1,4 @@
-package com.epam.multithreading.creator.json;
+package com.epam.multithreading.parser.json;
 
 import com.epam.multithreading.exception.JsonParsingException;
 import com.epam.multithreading.ship.RequestedPortService;
