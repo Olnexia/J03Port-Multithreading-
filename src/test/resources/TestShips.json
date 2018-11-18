@@ -2,13 +2,13 @@
   {
     "name": "Flame",
     "capacity": "5",
-    "fullness": "3",
-    "target": "LOAD"
+    "container amount": "3",
+    "requested service": "load"
   },
   {
     "name": "Golden",
     "capacity": "7",
-    "fullness": "4",
-    "target": "UNLOAD_LOAD"
+    "container amount": "4",
+    "requested service": "unload load"
   }
 ]

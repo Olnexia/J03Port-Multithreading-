@@ -1,4 +1,4 @@
-package com.epam.multithreading.port;
+package com.epam.multithreading.port.berthpool;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,16 +11,16 @@ public class Berth {
         this.berthId = id;
     }
 
-    public int getBerthId() {
-        return berthId;
-    }
-
     public void notifyUnloaded(int unloadedId){
         unloadedContainersId.add(unloadedId);
     }
 
     public void clearUnloadedList(){
         unloadedContainersId.clear();
+    }
+
+    public int getBerthId() {
+        return berthId;
     }
 
     public List <Integer> getUnloadedContainersId() {

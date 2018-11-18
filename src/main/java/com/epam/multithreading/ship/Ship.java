@@ -1,9 +1,11 @@
 package com.epam.multithreading.ship;
 
 import com.epam.multithreading.container.Container;
-import com.epam.multithreading.container.ContainerRegistrar;
-import com.epam.multithreading.port.Berth;
+import com.epam.multithreading.exception.ResourceException;
+import com.epam.multithreading.port.berthpool.Berth;
 import com.epam.multithreading.port.Port;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.util.LinkedList;
@@ -12,29 +14,29 @@ import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 
 public class Ship implements Runnable {
-    private static final ContainerRegistrar CONTAINER_REGISTRAR = ContainerRegistrar.getRegistrar();
     private static final Logger logger = LogManager.getLogger(Ship.class);
+
     private String name;
     private Port port;
     private Berth berth;
-    private Target target;
-    private Queue<Container> containers = new LinkedList <>();
-    private int containerAmount;
     private int capacity;
+    private int containerAmount;
+    private RequestedPortService requestedPortService;
+    private Queue<Container> containers = new LinkedList <>();
 
-    public Ship(String name, int capacity, int containerAmount,Target target){
+    @JsonCreator
+    public Ship(@JsonProperty("name") String name,@JsonProperty("capacity") int capacity,
+                @JsonProperty("container amount") int containerAmount,
+                @JsonProperty("requested service")RequestedPortService requestedPortService){
         this.name = name;
         this.capacity = capacity;
-        this.target = target;
+        this.requestedPortService = requestedPortService;
         this.containerAmount = containerAmount;
-        if(containerAmount>0){
-            generateStorage(containerAmount);
-        }
     }
 
     public void run() {
         moor();
-        switch (target){
+        switch (requestedPortService){
             case UNLOAD:
                 unloadShip();
                 break;
@@ -45,25 +47,30 @@ public class Ship implements Runnable {
                 unloadShip();
                 loadShip();
                 break;
+                default:
+                    logger.error("Illegal port activity value. Ship "+name);
+                    throw new IllegalArgumentException();
         }
         leave();
     }
 
     private void unloadShip(){
-
         while(containerAmount>0){
             Container container = containers.poll();
             if(container==null){
+                logger.info("The ship" + name + "is empty");
                 System.out.println("The ship" + name + "is empty");
-                return;
+                break;
             }
             if(port.offerContainer(container)){
                 int containerId = container.getRegistrationNumber();
                 berth.notifyUnloaded(containerId);
-                System.out.println("The ship " + name + " has unloaded container # "+ container.getRegistrationNumber());
+                logger.info("The ship " + name + " has unloaded container # "+ containerId);
+                System.out.println("The ship " + name + " has unloaded container # "+ containerId);
             } else{
+                logger.info("The port storage is full");
                 System.out.println("The port storage is full");
-                return;
+                break;
             }
             containerAmount--;
         }
@@ -74,13 +81,17 @@ public class Ship implements Runnable {
         while(containerAmount<capacity){
             Container container = port.getNewContainer(unloadedContainersId);
             if(container == null){
+                logger.info("Ship "+name+": Nothing to load");
                 System.out.println("Ship "+name+": Nothing to load");
-                return;
+                break;
             }
             if(containers.offer(container)){
                 containerAmount++;
-                System.out.println("The ship " + name + " has loaded container # "+container.getRegistrationNumber());
+                int containerId = container.getRegistrationNumber();
+                logger.info("The ship " + name + " has loaded container # "+containerId);
+                System.out.println("The ship " + name + " has loaded container # "+containerId);
             } else{
+                logger.info("The storage of ship "+name+" is full");
                 System.out.println("The storage of ship "+name+" is full");
             }
         }
@@ -91,7 +102,7 @@ public class Ship implements Runnable {
             berth = port.getBerth();
             TimeUnit.MICROSECONDS.sleep(100);
             System.out.println("The Ship " + name +" has moored to the berth # "+ berth.getBerthId());
-        }catch (InterruptedException e){
+        }catch (InterruptedException| ResourceException e){
             logger.error("An error occurred while mooring ship " + name,e.getMessage());
         }
     }
@@ -107,23 +118,16 @@ public class Ship implements Runnable {
         }
     }
 
-    private void generateStorage(int containerAmount) {
-        for (int i = 0; i < containerAmount; i++) {
-            Container container = CONTAINER_REGISTRAR.getContainer();
-            containers.add(container);
-        }
-    }
-
     public void setPort(Port port) {
         this.port = port;
     }
 
-    public String getName() {
-        return name;
+    public void setContainers(Queue <Container> containers) {
+        this.containers = containers;
     }
 
-    public Target getTarget() {
-        return target;
+    public RequestedPortService getRequestedPortService() {
+        return requestedPortService;
     }
 
     public int getContainerAmount() {
@@ -132,5 +136,9 @@ public class Ship implements Runnable {
 
     public int getCapacity() {
         return capacity;
+    }
+
+    public String getName() {
+        return name;
     }
 }

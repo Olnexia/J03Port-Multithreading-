@@ -1,15 +1,15 @@
 package com.epam.multithreading.container;
 
-public class ContainerRegistrar {
-    private static ContainerRegistrar instance = null;
+public class ContainerRegistrator {
+    private static ContainerRegistrator instance = null;
     private int currentContainerId;
 
-    private ContainerRegistrar(){
+    private ContainerRegistrator(){
     }
 
-    public static ContainerRegistrar getRegistrar(){
+    public static ContainerRegistrator getRegistrator(){
         if(instance==null){
-            instance = new ContainerRegistrar();
+            instance = new ContainerRegistrator();
         }
         return instance;
     }

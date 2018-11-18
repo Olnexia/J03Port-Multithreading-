@@ -2,37 +2,37 @@
   {
     "name": "Terra",
     "capacity": "7",
-    "fullness": "7",
-    "target": "UNLOAD"
+    "container amount": "7",
+    "requested service": "unload"
   },
   {
     "name": "California",
     "capacity": "4",
-    "fullness": "2",
-    "target": "UNLOAD_LOAD"
+    "container amount": "2",
+    "requested service": "unload load"
   },
   {
     "name": "Mess",
     "capacity": "5",
-    "fullness": "0",
-    "target": "LOAD"
+    "container amount": "0",
+    "requested service": "load"
   },
   {
     "name": "Camellia",
     "capacity": "7",
-    "fullness": "5",
-    "target": "UNLOAD_LOAD"
+    "container amount": "5",
+    "requested service": "unload load"
   },
   {
     "name": "Gorden",
     "capacity": "7",
-    "fullness": "6",
-    "target": "UNLOAD"
+    "container amount": "6",
+    "requested service": "unload"
   },
   {
     "name": "Renard",
     "capacity": "7",
-    "fullness": "0",
-    "target": "LOAD"
+    "container amount": "0",
+    "requested service": "load"
   }
 ]
